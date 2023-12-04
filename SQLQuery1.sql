@@ -15,16 +15,16 @@ SELECT distinct Product_Name from SuperStore_Sale_Report..Superstore
 
 --Grouping Sales and Profits by Order Date
 SELECT Order_Date, 
-sum(sales) As Total_Sales,
-sum(Profit) as Total_Profits
+Round(sum(sales), 6) As Total_Sales,
+Round(sum(Profit), 6) as Total_Profits
 FROM SuperStore_Sale_Report..Superstore
 GROUP BY Order_Date
 ORDER BY Order_Date ASC
 
 --Caluclating total sales per State
 SELECT City, 
-sum(sales) As Total_Sales,
-sum(Profit) as Total_Profits
+Round(sum(sales), 6) As Total_Sales,
+Round(sum(Profit), 6) as Total_Profits
 FROM SuperStore_Sale_Report..Superstore
 GROUP BY City
 ORDER BY City ASC
@@ -34,11 +34,11 @@ SELECT Product_ID, Category,
 sum(Quantity) As Total_Quantity
 FROM SuperStore_Sale_Report..Superstore
 GROUP BY Product_ID, Category
-ORDER BY Total_Quantity
+ORDER BY Total_Quantity DESC
 
 --Finding the most popular product in a specific category
 SELECT Product_ID, Product_Name,
-Round(sum(sales), 4) AS Total_sales
+Round(sum(sales), 6) AS Total_sales
 FROM SuperStore_Sale_Report..Superstore
 GROUP BY Product_ID, Product_Name
 ORDER BY Total_sales
@@ -50,25 +50,26 @@ GROUP BY Region
 ORDER BY Profits_Per_City
 
 --highest selling Category
-SELECT Category, round(sum(sales), 4) As Highest_selling_Product
+SELECT Category, round(sum(sales), 6) As Highest_selling_Product
 FROM SuperStore_Sale_Report..Superstore
 GROUP BY Category
 ORDER BY Category
 
 --highest selling Product/Sub_Category
-SELECT Sub_Category, Category, count(Sub_Category) As selling_Count
+SELECT Region, City, COUNT(DISTINCT Customer_ID) AS Total_Customers
 FROM SuperStore_Sale_Report..Superstore
-GROUP BY Sub_Category
-ORDER BY selling_Count
+GROUP BY Region, City
+ORDER BY Total_Customers DESC
+
 
 --most used shipping mode
-SELECT Ship_Mode, COUNT(Ship_Mode) As Frequently_Use_Mode
+SELECT Ship_Mode, count(Ship_Mode) As Frequently_Use_Mode
 FROM SuperStore_Sale_Report..Superstore
 GROUP BY Ship_Mode
 ORDER BY Frequently_Use_Mode DESC;
 
 --highest selling Product/Sub_Category
-SELECT Sub_Category, Category, SUM(Quantity) As Total_Quantity
+SELECT Sub_Category, Category, sum(Quantity) As Total_Quantity
 FROM SuperStore_Sale_Report..Superstore
 GROUP BY Sub_Category, Category
 ORDER BY Total_Quantity DESC;
@@ -80,5 +81,33 @@ FROM SuperStore_Sale_Report..Superstore
 GROUP BY Region,Category, Sub_Category
 ORDER BY Total_Sales DESC;
 
---Most Buying customer
+--observation of Total discount per Category
+SELECT Category, round(sum(discount), 6) AS Total_Discount
+FROM SuperStore_Sale_Report..Superstore
+GROUP BY Category
+ORDER BY Total_Discount DESC;
 
+
+--Type of products with most discount
+SELECT Category, Sub_Category, round(sum(discount), 6) AS Total_Discount
+FROM superstore
+GROUP BY Category, Sub_Category
+ORDER BY total_Discount DESC;
+
+
+--Total number of customers
+SELECT count(distinct Customer_ID) AS Total_Customers
+FROM SuperStore_Sale_Report..Superstore
+
+--Calculating number of custommers per region
+SELECT region, COUNT(distinct Customer_ID) AS Total_Customers
+FROM SuperStore_Sale_Report..Superstore
+GROUP BY region
+ORDER BY Total_Customers DESC;
+
+
+--Calculating number of customers per region and City
+SELECT Region, City, count(distinct Customer_ID) AS Total_Customers
+FROM SuperStore_Sale_Report..Superstore
+GROUP BY Region, City
+ORDER BY Total_Customers DESC;
